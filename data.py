@@ -3,19 +3,23 @@ import csv
 import os
 import pandas as pd
 
-#def load_data(data_path):
-path = 'Fantasy-Premier-League/data/2020-21/cleaned_players.csv'
+# def load_data(data_path):
+# Column 'element_type' from players_raw.csv is actually the position, just as numeric code rather than a String
 
-position_data = pd.read_csv(path)
-position_data = position_data.loc[:, 'element_type']
-position_data =  position_data.to_numpy()
+players_path = 'Fantasy-Premier-League/data/2020-21/players_raw.csv'
+players_data = pd.read_csv(players_path)
+players_data = players_data.loc[:, ['id', 'first_name', 'second_name', 'team', 'element_type', 'now_cost',
+                                    'total_points', 'minutes', 'goals_scored', 'assists', 'clean_sheets',
+                                    'goals_conceded', 'own_goals', 'penalties_saved', 'penalties_missed',
+                                    'yellow_cards', 'red_cards', 'saves', 'bonus']]
+players_data = players_data.to_numpy()
 
-path2 = 'Fantasy-Premier-League/data/2020-21/players_raw.csv'
-raw_data = pd.read_csv(path2)
-raw_data = raw_data.loc[:, ['first_name', 'second_name', 'team', 'now_cost', 'total_points', 'minutes',
-                 'goals_scored', 'assists', 'clean_sheets', 'goals_conceded', 'own_goals', 'penalties_saved',
-                'penalties_missed', 'yellow_cards', 'red_cards', 'saves', 'bonus']]
-raw_data = raw_data.to_numpy()
-
-players_data = np.concatenate((raw_data, np.reshape(position_data, (-1, 1))), axis=1)
 print(players_data)
+
+teams_path = 'Fantasy-Premier-League/data/2020-21/teams.csv'
+team_data = pd.read_csv(teams_path)
+# Probably want goals for, goals against, and goal difference
+team_data = team_data.loc[:, ['id', 'name', 'played', 'win', 'draw', 'loss', 'points', 'position',
+                              'strength_attack_away', 'strength_attack_home', 'strength_defence_away',
+                              'strength_defence_home', 'strength_overall_away', 'strength_overall_home']]
+print(team_data)
