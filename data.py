@@ -18,6 +18,7 @@ class Data:
                                           'minutes', 'opponent_team', 'own_goals', 'penalties_missed',
                                           'penalties_saved', 'red_cards', 'saves', 'minutes', 'team_h_score',
                                           'team_a_score', 'total_points', 'value']
+        self.prev_teams_data = {}
 
     def load_data(self):
         players_path = 'Fantasy-Premier-League/data/2020-21/players_raw.csv'
@@ -37,6 +38,14 @@ class Data:
         for row in teams_data:
             self.teams_data[row[0]] = row
 
+        prev_teams_path = 'Fantasy-Premier-League/data/2019-20/teams.csv'
+        prev_teams_data = pd.read_csv(prev_teams_path)
+        prev_teams_data = prev_teams_data.loc[:, self.teams_data_attributes]
+        prev_teams_data = prev_teams_data.to_numpy()
+
+        for row in prev_teams_data:
+            self.prev_teams_data[row[0]] = row
+
     def get_opponent_team_data(self, team_id):
         return self.teams_data[team_id]
 
@@ -44,8 +53,6 @@ class Data:
         # The following is a test to obtain player gameweek (gw) data for 2019-20 (previous season)
         # TODO: Corroborate this player data with the team the player plays for,
         # which is the 'team' field in players_data
-        # TODO: players_data has ids for the current season, but we are trying to get information from past seasons
-        # where the player ids were different
         player_gw_path = get_player_gw_path(self.players_data[player_id][1], self.players_data[player_id][2],
                                             self.get_previous_player_id(player_id, '2019-20'))
         player_gw_data = pd.read_csv(player_gw_path)
@@ -63,6 +70,13 @@ class Data:
                 return row[2]
         return -1
 
+    def get_previous_team_data(self, current_team_id):
+        name = self.teams_data[current_team_id][1]
+        for key in self.prev_teams_data:
+            if self.prev_teams_data[key][1] == name:
+                return self.prev_teams_data[key]
+        return None
+
 
 def get_player_gw_path(first_name, second_name, player_id):
     # Note this is 2019-20 because there is no player data for the new season yet
@@ -72,6 +86,7 @@ def get_player_gw_path(first_name, second_name, player_id):
 tester = Data()
 tester.load_data()
 print(tester.get_player_gw_data(11))
+print(tester.get_previous_team_data(13))
 
 # TODO: Some things to think about here
 # Maybe for each metric (goals, assists, bonus; total), we can plot the data points on the y axis against strength on
