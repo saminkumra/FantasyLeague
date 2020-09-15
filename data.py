@@ -3,6 +3,7 @@ import csv
 import os
 import pandas as pd
 
+# test
 # def load_data(data_path):
 
 # Column 'element_type' from players_raw.csv is actually the position, just as numeric code rather than a String
