@@ -3,6 +3,7 @@ import csv
 import os
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
 
 class Data:
     def __init__(self):
@@ -99,9 +100,19 @@ def get_player_gw_path(first_name, second_name, player_id):
            + str(player_id) + '/gw.csv'
 tester = Data()
 tester.load_data()
-print(tester.get_player_gw_data(11))
+print(tester.get_player_gw_data(4))
 print(tester.get_previous_team_data(13))
-print(tester.get_opponent_difficulties(11))
+print(tester.get_opponent_difficulties(4))
+
+opponent_difficulties = tester.get_opponent_difficulties(24).reshape(-1, 1)
+player_points = tester.get_player_gw_data(24)[:, -3].reshape(-1, 1)
+print(player_points)
+linear_regressor = LinearRegression()  # create object for the class
+linear_regressor.fit(opponent_difficulties, player_points)
+Y_pred = linear_regressor.predict(opponent_difficulties)
+plt.scatter(opponent_difficulties, player_points)
+plt.plot(opponent_difficulties, Y_pred, color='red')
+plt.show()
 
 # TODO: Some things to think about here
 # Maybe for each metric (goals, assists, bonus; total), we can plot the data points on the y axis against strength on
