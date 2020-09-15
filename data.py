@@ -2,6 +2,7 @@ import numpy as np
 import csv
 import os
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 
 class Data:
     def __init__(self):
@@ -17,7 +18,7 @@ class Data:
         self.player_gw_data_attributes = ['assists', 'bonus', 'bps', 'clean_sheets', 'goals_conceded', 'goals_scored',
                                           'minutes', 'opponent_team', 'own_goals', 'penalties_missed',
                                           'penalties_saved', 'red_cards', 'saves', 'minutes', 'team_h_score',
-                                          'team_a_score', 'total_points', 'value']
+                                          'team_a_score', 'total_points', 'value', 'was_home']
         self.prev_teams_data = {}
 
     def load_data(self):
@@ -77,16 +78,30 @@ class Data:
                 return self.prev_teams_data[key]
         return None
 
+    def get_opponent_difficulties(self, player_id):
+        player_gw_data = self.get_player_gw_data(player_id)
+        opponent_difficulties = np.array([])
+        for gw in player_gw_data:
+            opponent_team = self.prev_teams_data[gw[7]]
+            if (self.players_data[player_id][4] == 1 or self.players_data[player_id][4] == 2) and gw[-1]:
+                opponent_difficulties = np.append(opponent_difficulties, opponent_team[8])
+            elif (self.players_data[player_id][4] == 1 or self.players_data[player_id][4] == 2) and not gw[-1]:
+                opponent_difficulties = np.append(opponent_difficulties, opponent_team[9])
+            elif (self.players_data[player_id][4] == 3 or self.players_data[player_id][4] == 4) and gw[-1]:
+                opponent_difficulties = np.append(opponent_difficulties, opponent_team[10])
+            else:
+                opponent_difficulties = np.append(opponent_difficulties, opponent_team[11])
+        return opponent_difficulties
 
 def get_player_gw_path(first_name, second_name, player_id):
     # Note this is 2019-20 because there is no player data for the new season yet
     return 'Fantasy-Premier-League/data/2019-20/players/' + first_name + '_' + second_name + '_'\
            + str(player_id) + '/gw.csv'
-
 tester = Data()
 tester.load_data()
 print(tester.get_player_gw_data(11))
 print(tester.get_previous_team_data(13))
+print(tester.get_opponent_difficulties(11))
 
 # TODO: Some things to think about here
 # Maybe for each metric (goals, assists, bonus; total), we can plot the data points on the y axis against strength on
