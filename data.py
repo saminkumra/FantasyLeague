@@ -46,10 +46,23 @@ class Data:
         # which is the 'team' field in players_data
         # TODO: players_data has ids for the current season, but we are trying to get information from past seasons
         # where the player ids were different
-        player_gw_path = get_player_gw_path(self.players_data[player_id][1], self.players_data[player_id][2], player_id)
+        player_gw_path = get_player_gw_path(self.players_data[player_id][1], self.players_data[player_id][2],
+                                            self.get_previous_player_id(player_id, '2019-20'))
         player_gw_data = pd.read_csv(player_gw_path)
         player_gw_data = player_gw_data.loc[:, self.player_gw_data_attributes]
         return player_gw_data.to_numpy()
+
+    def get_previous_player_id(self, current_id, season):
+        first_name = self.players_data[current_id][1]
+        second_name = self.players_data[current_id][2]
+        id_path = 'Fantasy-Premier-League/data/' + season + '/player_idlist.csv'
+        id_data = pd.read_csv(id_path)
+        id_data = id_data.to_numpy()
+        for row in id_data:
+            if first_name == row[0] and second_name == row[1]:
+                return row[2]
+        return -1
+
 
 def get_player_gw_path(first_name, second_name, player_id):
     # Note this is 2019-20 because there is no player data for the new season yet
