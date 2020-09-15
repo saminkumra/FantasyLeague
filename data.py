@@ -26,3 +26,9 @@ print(team_data)
 
 def get_player_gw_path(first_name, second_name, id):
     return 'Fantasy-Premier-League/data/2019-20/players/' + first_name + '_' + second_name + '_' + id + '/gw.csv'
+
+# Maybe for each metric (goals, assists, bonus; total), we can plot the data points on the y axis against strength on
+# the x. For defenders, the x axis would be opponent attacking strength. For attackers, the x axis would be opponent
+# defending strength. Find some way to incorporate home/away. Maybe use the difference between the strengths of the 2
+# sides in a match?
+# Then maybe the model would be best served as a linear regression model.
