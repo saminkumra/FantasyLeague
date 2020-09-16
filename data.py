@@ -104,8 +104,8 @@ print(tester.get_player_gw_data(4))
 print(tester.get_previous_team_data(13))
 print(tester.get_opponent_difficulties(4))
 
-opponent_difficulties = tester.get_opponent_difficulties(24).reshape(-1, 1)
-player_points = tester.get_player_gw_data(24)[:, -3].reshape(-1, 1)
+opponent_difficulties = tester.get_opponent_difficulties(254).reshape(-1, 1)
+player_points = tester.get_player_gw_data(254)[:, -3].reshape(-1, 1)
 print(player_points)
 linear_regressor = LinearRegression()  # create object for the class
 linear_regressor.fit(opponent_difficulties, player_points)
